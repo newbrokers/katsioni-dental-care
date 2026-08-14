@@ -118,8 +118,14 @@
     background-image:radial-gradient(circle at 15% 30%, rgba(23,165,150,.18), transparent 45%),
                       radial-gradient(circle at 85% 75%, rgba(203,155,79,.14), transparent 40%);
     pointer-events:none;
+    z-index:1;
   }
-  .hero-grid{position:relative;display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;}
+  .hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;}
+  .hero-video-overlay{
+    position:absolute;inset:0;z-index:0;
+    background:linear-gradient(120deg, rgba(8,38,35,.88) 0%, rgba(11,61,58,.78) 45%, rgba(8,38,35,.55) 100%);
+  }
+  .hero-grid{position:relative;z-index:2;display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;}
   .hero-badge{
     display:inline-flex;align-items:center;gap:9px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);
     padding:8px 16px;border-radius:99px;font-size:13.5px;font-weight:600;margin-bottom:24px;color:#e9f6f2;
@@ -408,6 +414,10 @@
 
 <!-- ============ HERO ============ -->
 <section class="hero" id="top">
+  <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="">
+    <source src="record-20260814-100004.mp4" type="video/mp4">
+  </video>
+  <div class="hero-video-overlay"></div>
   <div class="container hero-grid">
     <div class="hero-copy">
       <div class="hero-badge"><span class="stars">★★★★★</span> 4.8/5 <span class="el">&middot; 25 κριτικές Google</span><span class="en hidden">&middot; 25 Google reviews</span></div>
