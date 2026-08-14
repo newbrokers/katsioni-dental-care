@@ -108,14 +108,10 @@
   .menu-btn svg{width:26px;height:26px;color:var(--teal-900);}
 
   /* ---------- HERO ---------- */
-  .hero-scroll-wrap{position:relative;height:220vh;}
   .hero{
-    position:sticky;top:0;overflow:hidden;
+    position:relative;overflow:hidden;
     background:radial-gradient(1100px 550px at 82% -10%, #164f49 0%, var(--teal-900) 55%, #082623 100%);
     padding:76px 0 96px;color:#fff;
-  }
-  @media(max-width:980px){
-    .hero-scroll-wrap{height:180vh;}
   }
   .hero::before{
     content:"";position:absolute;inset:0;
@@ -437,9 +433,11 @@
 </header>
 
 <!-- ============ HERO ============ -->
-<div class="hero-scroll-wrap" id="top">
-<section class="hero">
-  <canvas class="hero-video" id="heroCanvas" aria-hidden="true"></canvas>
+<section class="hero" id="top">
+  <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="">
+    <source src="mobile view video.mp4" type="video/mp4" media="(max-width: 768px)">
+    <source src="desktop view video (2).mp4" type="video/mp4">
+  </video>
   <div class="hero-video-overlay"></div>
   <div class="container hero-grid">
     <div class="hero-copy">
@@ -497,7 +495,6 @@
     </div>
   </div>
 </section>
-</div>
 
 <!-- ============ ABOUT ============ -->
 <section class="about" id="about">
@@ -880,111 +877,6 @@
 
 <script>
   document.getElementById('year').textContent = new Date().getFullYear();
-
-  // ---------- Hero scroll-driven frame sequence ----------
-  (function(){
-    var canvas = document.getElementById('heroCanvas');
-    var wrap = document.getElementById('top');
-    var heroSection = wrap ? wrap.querySelector('.hero') : null;
-    if(!canvas || !wrap || !heroSection) return;
-    var ctx = canvas.getContext('2d');
-    var frameCount = 100;
-    var frameBase = 'hero-frames/frame-';
-    var images = new Array(frameCount);
-    var loaded = new Array(frameCount);
-    var loadedAny = false;
-    var currentFrame = 1;
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    function pad(n){ return (n < 10 ? '00' : (n < 100 ? '0' : '')) + n; }
-
-    function resizeCanvas(){
-      var w = canvas.clientWidth;
-      var h = canvas.clientHeight;
-      canvas.width = Math.round(w * dpr);
-      canvas.height = Math.round(h * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    }
-
-    function drawFrame(n){
-      var img = images[n - 1];
-      if(!img || !loaded[n - 1]) return;
-      var cw = canvas.clientWidth;
-      var ch = canvas.clientHeight;
-      var iw = img.naturalWidth;
-      var ih = img.naturalHeight;
-      if(!cw || !ch || !iw || !ih) return;
-      var scale = Math.max(cw / iw, ch / ih);
-      var dw = iw * scale;
-      var dh = ih * scale;
-      var dx = (cw - dw) / 2;
-      var dy = (ch - dh) / 2;
-      ctx.clearRect(0, 0, cw, ch);
-      ctx.drawImage(img, dx, dy, dw, dh);
-    }
-
-    function nearestLoadedFrame(n){
-      if(loaded[n - 1]) return n;
-      for(var d = 1; d < frameCount; d++){
-        if(n - d >= 1 && loaded[n - d - 1]) return n - d;
-        if(n + d <= frameCount && loaded[n + d - 1]) return n + d;
-      }
-      return null;
-    }
-
-    function updateFrameFromScroll(){
-      var wrapRect = wrap.getBoundingClientRect();
-      var scrollableDistance = wrap.offsetHeight - heroSection.offsetHeight;
-      var progress = scrollableDistance > 0 ? (-wrapRect.top / scrollableDistance) : 0;
-      if(progress < 0) progress = 0;
-      if(progress > 1) progress = 1;
-      var target = Math.round(progress * (frameCount - 1)) + 1;
-      var toDraw = nearestLoadedFrame(target);
-      if(toDraw && toDraw !== currentFrame || (toDraw && !loadedAny)){
-        currentFrame = toDraw;
-        drawFrame(currentFrame);
-        loadedAny = true;
-      }
-    }
-
-    var ticking = false;
-    function onScroll(){
-      if(ticking) return;
-      ticking = true;
-      requestAnimationFrame(function(){
-        updateFrameFromScroll();
-        ticking = false;
-      });
-    }
-
-    resizeCanvas();
-
-    for(var i = 1; i <= frameCount; i++){
-      (function(idx){
-        var img = new Image();
-        img.onload = function(){
-          loaded[idx - 1] = true;
-          if(idx === 1 && !loadedAny){
-            drawFrame(1);
-            loadedAny = true;
-          }
-        };
-        img.src = frameBase + pad(idx) + '.jpg';
-        images[idx - 1] = img;
-      })(i);
-    }
-
-    window.addEventListener('resize', function(){
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
-      resizeCanvas();
-      drawFrame(currentFrame);
-    });
-
-    if(!reduceMotion){
-      window.addEventListener('scroll', onScroll, { passive: true });
-    }
-  })();
 
   function setLang(lang){
     document.documentElement.lang = lang;
