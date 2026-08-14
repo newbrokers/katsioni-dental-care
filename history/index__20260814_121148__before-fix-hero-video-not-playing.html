@@ -429,7 +429,10 @@
 
 <!-- ============ HERO ============ -->
 <section class="hero" id="top">
-  <video class="hero-video" id="heroVideo" autoplay muted loop playsinline preload="auto"></video>
+  <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="">
+    <source src="mobile view video.mp4" type="video/mp4" media="(max-width: 768px)">
+    <source src="desktop view video.mp4" type="video/mp4">
+  </video>
   <div class="hero-video-overlay"></div>
   <div class="container hero-grid">
     <div class="hero-copy">
@@ -868,26 +871,6 @@
 
 <script>
   document.getElementById('year').textContent = new Date().getFullYear();
-
-  // ---------- Hero video: pick mobile/desktop source in JS (media= on <source> is unreliable for <video>) ----------
-  (function(){
-    var video = document.getElementById('heroVideo');
-    if(!video) return;
-    var sources = { mobile: 'mobile view video.mp4', desktop: 'desktop view video.mp4' };
-    var current = null;
-    function applySource(){
-      var isMobile = window.matchMedia('(max-width: 768px)').matches;
-      var key = isMobile ? 'mobile' : 'desktop';
-      if(key === current) return;
-      current = key;
-      video.src = sources[key];
-      video.load();
-      var p = video.play();
-      if(p && p.catch){ p.catch(function(){}); }
-    }
-    applySource();
-    window.addEventListener('resize', applySource);
-  })();
 
   function setLang(lang){
     document.documentElement.lang = lang;
