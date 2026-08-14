@@ -327,8 +327,9 @@
   .form-field label{font-size:12.5px;font-weight:600;color:var(--ink-600);font-family:'Poppins',sans-serif;}
   .form-field input, .form-field select, .form-field textarea{
     border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;font-family:'Inter',sans-serif;font-size:14px;color:var(--ink-900);
-    outline:none;transition:border-color .15s;background:#fbfdfc;
+    outline:none;transition:border-color .15s;background:#fbfdfc;width:100%;max-width:100%;
   }
+  .form-field select{text-overflow:ellipsis;white-space:nowrap;overflow:hidden;}
   .form-field input:focus, .form-field select:focus, .form-field textarea:focus{border-color:var(--teal-500);}
   .form-field textarea{resize:vertical;min-height:88px;}
   .form-card .btn{width:100%;margin-top:6px;}
@@ -783,13 +784,13 @@
           <div class="form-row">
             <div class="form-field full">
               <label><span class="el">Λόγος επίσκεψης</span><span class="en hidden">Reason for visit</span></label>
-              <select name="Reason">
-                <option><span class="el">Γενικός έλεγχος / καθαρισμός</span><span class="en hidden">General check-up / cleaning</span></option>
-                <option><span class="el">ΓεΣΥ ραντεβού</span><span class="en hidden">GESY appointment</span></option>
-                <option><span class="el">Παιδοδοντιατρική</span><span class="en hidden">Children's dentistry</span></option>
-                <option><span class="el">Αισθητική / αποκαταστατική</span><span class="en hidden">Cosmetic / restorative</span></option>
-                <option><span class="el">Επείγον περιστατικό</span><span class="en hidden">Emergency</span></option>
-                <option><span class="el">Άλλο</span><span class="en hidden">Other</span></option>
+              <select name="Reason" id="reasonSelect">
+                <option data-el="Γενικός έλεγχος / καθαρισμός" data-en="General check-up / cleaning">Γενικός έλεγχος / καθαρισμός</option>
+                <option data-el="ΓεΣΥ ραντεβού" data-en="GESY appointment">ΓεΣΥ ραντεβού</option>
+                <option data-el="Παιδοδοντιατρική" data-en="Children's dentistry">Παιδοδοντιατρική</option>
+                <option data-el="Αισθητική / αποκαταστατική" data-en="Cosmetic / restorative">Αισθητική / αποκαταστατική</option>
+                <option data-el="Επείγον περιστατικό" data-en="Emergency">Επείγον περιστατικό</option>
+                <option data-el="Άλλο" data-en="Other">Άλλο</option>
               </select>
             </div>
           </div>
@@ -874,6 +875,12 @@
     });
     try{ localStorage.setItem('kdc-lang', lang); }catch(e){}
     updateHoursStatus(lang);
+    var reasonSelect = document.getElementById('reasonSelect');
+    if(reasonSelect){
+      Array.prototype.forEach.call(reasonSelect.options, function(opt){
+        opt.textContent = lang === 'en' ? opt.getAttribute('data-en') : opt.getAttribute('data-el');
+      });
+    }
   }
 
   document.querySelectorAll('[data-lang-btn]').forEach(function(btn){
